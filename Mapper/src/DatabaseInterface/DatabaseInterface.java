@@ -102,6 +102,8 @@ public class DatabaseInterface {
 	 * @return An array of triples (GPSSet) containing <Time, Longitude, Latitude> ordered ascending by time
 	 * NOTE: Time is a readable string representation of the time. Do NOT use epoch time to store.
 	 * Time format should be: MM/DD|24Hour:Min:Sec (complete the conversion method first
+	 * 
+	 * Columns: Time = time | longitude = longitude | latitude = lat
 	 */
 	public static GPSSet<String, BigDecimal, BigDecimal> [] getAllCoordinates(Connection conn, String device_id){
 		// TODO write this method
