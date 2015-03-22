@@ -86,13 +86,12 @@ public class DatabaseInterface {
 	
 	/**
 	 * converts a given integer epoch representation of the date into a human readable format
-	 * Format: MM/DD|24Hour:Min:Sec -- e.g. 03/20|23:59:55
 	 * @param epoch the UNIX epoch representation of the time
-	 * @return a string representation of the time formated as above
+	 * @return d :: date object
 	 */
-	private static String convertEpochToReadable(int epoch){
-		// TODO write this method
-		return null;		// remove this when finished writing. Only here to prevent compiler errors		
+	private static Date convertEpochToReadable(int epoch){
+		Date d = new Date(Long.parseLong(epoch) * 1000);
+		return d;		
 	}
 	
 	/**
