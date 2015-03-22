@@ -103,14 +103,15 @@ public class DatabaseInterface {
 	 * Queries the database to obtain ALL timestamp and GPS coordinates for a specific device_id. 
 	 * @param conn An already instantiated connection.
 	 * @param device_id The string representation of the device_id column
-	 * @param start_day The UNIX epoch representation of the start time. Will grab 24 hours of data.
+	 * @param start_time The UNIX epoch representation of the start time.
+	 * @param end_time The UNIX epoch representation of the end time.
 	 * @return An array of triples (GPSSet) containing <Time, Longitude, Latitude> ordered ascending by time
 	 * NOTE: Time is a readable string representation of the time. Do NOT use epoch time to store.
 	 * Time format should be standard Date (complete the conversion method first)
 	 * 
 	 * Columns: Time = time | longitude = longitude | latitude = lat
 	 */
-	public static List<GPSSet<Date, Double, Double>> getAllCoordinates(Connection conn, String device_id, long start_day){
+	public static List<GPSSet<Date, Double, Double>> getAllCoordinates(Connection conn, String device_id, long start_time, long end_time){
 		if (conn == null){
 			System.err.println("ERROR: Connection has not been instantiated!");
 			return null;
@@ -118,12 +119,11 @@ public class DatabaseInterface {
 		List<GPSSet<Date, Double, Double>> set = null;
 		// get the time range
 		String s = "SELECT * FROM bigbrother.gps_data WHERE device_id = ? AND time >= ? AND time <= ? ORDER BY time ASC";
-		long end_day = start_day + 86400;	// start time (seconds) + 24 hours worth of seconds
 		try{
 			PreparedStatement q = conn.prepareStatement(s);		
 			q.setString(1, device_id);
-			q.setLong(2, start_day);
-			q.setLong(3, end_day);
+			q.setLong(2, start_time);
+			q.setLong(3, end_time);
 			ResultSet r = q.executeQuery();
 			int size = getResultSize(r);
 			set = new ArrayList<>(size);
@@ -168,11 +168,6 @@ public class DatabaseInterface {
 		
 		Date d = convertEpochToReadable(1426869568L);
 		System.out.println(d);
-		List<GPSSet<Date, Double, Double>> g = getAllCoordinates(conn, r[0], 1426869568L);
-		destroyConnection(conn);
-		for (GPSSet<Date, Double, Double> i : g){
-			System.out.println(i);
-		}
 	}
 	
 }
