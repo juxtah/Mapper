@@ -34,7 +34,7 @@ public class Cmpt352ui extends Application {
         Label deviceLabel = new Label("Device list: ");
         deviceLabel.setFont(Font.font("Arial", 14));
         
-        ChoiceBox deviceList = new ChoiceBox();
+        ChoiceBox <String> deviceList = new ChoiceBox<>();
         deviceList.setItems(myModel.getDevice());
         
         Canvas myCanvas = new Canvas(1280, 720);        

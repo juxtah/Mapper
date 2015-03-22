@@ -10,6 +10,8 @@ import static databaseinterface.DatabaseInterface.getDeviceList;
 import static databaseinterface.DatabaseInterface.instantiateConnection;
 import databaseinterface.GPSSet;
 import java.sql.Connection;
+import java.util.Arrays;
+import java.util.Date;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -26,9 +28,7 @@ public class MapModel {
         String [] r = getDeviceList(conn);
         destroyConnection(conn);
         if (r != null){
-            for (String i : r){
-                DeviceList.add(i);
-            }
+		DeviceList.addAll(Arrays.asList(r));
         }
     }
     
@@ -37,11 +37,9 @@ public class MapModel {
     }
     
     private GPSSet convertRelativePoint(GPSSet old){
-        
-        
         double newLat = (52.13372-(float)old.getLatitude())*((52.13372-52.12894)/720);
         double newLong = ((float)old.getLongitude()-(-106.6414))*(((-106.6276)-(-106.6414))/1280);
-        GPSSet newGPS = new GPSSet(old.getTime(), newLong, newLat);
+        GPSSet <Date, Double, Double> newGPS = new GPSSet<>((Date)old.getTime(), newLong, newLat);
         return newGPS;
     }
     

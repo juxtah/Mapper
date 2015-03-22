@@ -105,7 +105,7 @@ public class DatabaseInterface {
 	 * 
 	 * Columns: Time = time | longitude = longitude | latitude = lat
 	 */
-	public static GPSSet<Date, BigDecimal, BigDecimal> [] getAllCoordinates(Connection conn, String device_id){
+	public static GPSSet<Date, Double, Double> [] getAllCoordinates(Connection conn, String device_id){
 		// TODO write this method
 		return null;		// remove this when finished writing. Only here to prevent compiler errors
 	}
