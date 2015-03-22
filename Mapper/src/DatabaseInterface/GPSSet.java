@@ -5,6 +5,8 @@
  */
 package databaseinterface;
 
+import java.util.Date;
+
 /**
  * 
  * @author ychen
@@ -33,5 +35,17 @@ public class GPSSet <A, B, C>{
 	
 	public C getLatitude(){
 		return this.latitude;
+	}
+	
+	@Override
+	public String toString(){
+		String s = "";
+		s += "(" + getTime() + ", " + getLatitude() + ", " + getLongitude() + ")";
+		return s;
+	}
+	
+	public static void main(String args[]){
+		GPSSet<Date, Double, Double> x = new GPSSet<>(new Date(), 0.0, 0.0);
+		System.out.println(x);
 	}
 }

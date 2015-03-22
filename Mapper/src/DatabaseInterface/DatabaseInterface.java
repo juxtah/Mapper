@@ -7,9 +7,13 @@ package databaseinterface;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -99,17 +103,44 @@ public class DatabaseInterface {
 	 * Queries the database to obtain ALL timestamp and GPS coordinates for a specific device_id. 
 	 * @param conn An already instantiated connection.
 	 * @param device_id The string representation of the device_id column
+	 * @param start_day The UNIX epoch representation of the start time. Will grab 24 hours of data.
 	 * @return An array of triples (GPSSet) containing <Time, Longitude, Latitude> ordered ascending by time
 	 * NOTE: Time is a readable string representation of the time. Do NOT use epoch time to store.
 	 * Time format should be standard Date (complete the conversion method first)
 	 * 
 	 * Columns: Time = time | longitude = longitude | latitude = lat
 	 */
-	public static GPSSet<Date, Double, Double> [] getAllCoordinates(Connection conn, String device_id){
-		// TODO write this method
-		return null;		// remove this when finished writing. Only here to prevent compiler errors
+	public static List<GPSSet<Date, Double, Double>> getAllCoordinates(Connection conn, String device_id, long start_day){
+		if (conn == null){
+			System.err.println("ERROR: Connection has not been instantiated!");
+			return null;
+		}
+		List<GPSSet<Date, Double, Double>> set = null;
+		// get the time range
+		String s = "SELECT * FROM bigbrother.gps_data WHERE device_id = ? AND time >= ? AND time <= ? ORDER BY time ASC";
+		long end_day = start_day + 86400;	// start time (seconds) + 24 hours worth of seconds
+		try{
+			PreparedStatement q = conn.prepareStatement(s);		
+			q.setString(1, device_id);
+			q.setLong(2, start_day);
+			q.setLong(3, end_day);
+			ResultSet r = q.executeQuery();
+			int size = getResultSize(r);
+			set = new ArrayList<>(size);
+			for (int i=0; i<size; i++){
+				r.next();
+				set.add(new GPSSet<>(convertEpochToReadable(r.getLong("time")), r.getDouble("longitude"), r.getDouble("lat")));
+			}	
+		}
+		catch (SQLException e){
+			System.err.println(e.getMessage());
+		}
+		catch (Exception e){
+			System.err.println(e.getMessage());
+		}
+		return set;		// remove this when finished writing. Only here to prevent compiler errors
 	}
-	
+
 	public static void destroyConnection(Connection conn){
 		try{
 			conn.close();
@@ -129,15 +160,19 @@ public class DatabaseInterface {
 		// TODO code application logic here
 		Connection conn = instantiateConnection();
 		String [] r = getDeviceList(conn);
-		destroyConnection(conn);
 		if (r != null){
 			for (String i : r){
 				System.out.println(i);
 			}
 		}
 		
-		Date d = convertEpochToReadable(14268695680L);
+		Date d = convertEpochToReadable(1426869568L);
 		System.out.println(d);
+		List<GPSSet<Date, Double, Double>> g = getAllCoordinates(conn, r[0], 1426869568L);
+		destroyConnection(conn);
+		for (GPSSet<Date, Double, Double> i : g){
+			System.out.println(i);
+		}
 	}
 	
 }
