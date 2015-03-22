@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 
 /**
  *
@@ -89,9 +90,9 @@ public class DatabaseInterface {
 	 * @param epoch the UNIX epoch representation of the time
 	 * @return d :: date object
 	 */
-	private static Date convertEpochToReadable(int epoch){
-		Date d = new Date(Long.parseLong(epoch) * 1000);
-		return d;		
+	private static Date convertEpochToReadable(long epoch){
+		Date d = new Date(epoch*1000);
+		return d;
 	}
 	
 	/**
@@ -100,11 +101,11 @@ public class DatabaseInterface {
 	 * @param device_id The string representation of the device_id column
 	 * @return An array of triples (GPSSet) containing <Time, Longitude, Latitude> ordered ascending by time
 	 * NOTE: Time is a readable string representation of the time. Do NOT use epoch time to store.
-	 * Time format should be: MM/DD|24Hour:Min:Sec (complete the conversion method first
+	 * Time format should be standard Date (complete the conversion method first)
 	 * 
 	 * Columns: Time = time | longitude = longitude | latitude = lat
 	 */
-	public static GPSSet<String, BigDecimal, BigDecimal> [] getAllCoordinates(Connection conn, String device_id){
+	public static GPSSet<Date, BigDecimal, BigDecimal> [] getAllCoordinates(Connection conn, String device_id){
 		// TODO write this method
 		return null;		// remove this when finished writing. Only here to prevent compiler errors
 	}
@@ -126,7 +127,6 @@ public class DatabaseInterface {
 	 */
 	public static void main(String[] args) {
 		// TODO code application logic here
-		DatabaseInterface d = new DatabaseInterface();
 		Connection conn = instantiateConnection();
 		String [] r = getDeviceList(conn);
 		destroyConnection(conn);
@@ -135,6 +135,9 @@ public class DatabaseInterface {
 				System.out.println(i);
 			}
 		}
+		
+		Date d = convertEpochToReadable(14268695680L);
+		System.out.println(d);
 	}
 	
 }
