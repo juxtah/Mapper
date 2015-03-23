@@ -29,9 +29,9 @@ import javafx.collections.ObservableList;
  */
 public class MapModel {
 
-    private ObservableList<deviceData> DeviceList = FXCollections.observableArrayList();
+    private ObservableList<String> DeviceList = FXCollections.observableArrayList();
     private Date startingTime, endingTime;
-    private deviceData selected;
+    private String selected;
     private List<GPSSet<Date, Double, Double>> locations;
 
     public MapModel() {
@@ -40,7 +40,7 @@ public class MapModel {
         destroyConnection(conn);
         for (String i : r) {
             if (r != null) {
-                DeviceList.addAll(new deviceData(i));
+                DeviceList.addAll(i);
             }
         }
         startingTime = null;
@@ -50,16 +50,12 @@ public class MapModel {
     }
 
     public ObservableList<String> getDevice() {
-        ObservableList<String> temp = FXCollections.observableArrayList();
-        for (deviceData i : DeviceList) {
-            temp.add(i.getDeviceName());
-        }
-        return temp;
+        return DeviceList;
     }
 
     public void setSelect(String name) {
-        for (deviceData i : DeviceList) {
-            if (name.equals(i.getDeviceName())) {
+        for (String i : DeviceList) {
+            if (name.equals(i)) {
                 selected = i;
             }
         }
@@ -78,13 +74,12 @@ public class MapModel {
     
     public List<GPSSet<Date, Double, Double>> getLocation(){
         Connection conn = instantiateConnection();
-        List<GPSSet<Date, Double, Double>> temp = getAllCoordinates(conn, selected.getDeviceName(), startingTime.getTime()/1000, endingTime.getTime()/1000);
-        destroyConnection(conn);
         locations.clear();
-        for(GPSSet<Date, Double, Double> i : temp){
+        for(GPSSet<Date, Double, Double> i : getAllCoordinates(conn, selected, startingTime.getTime()/1000, endingTime.getTime()/1000)){
             System.out.println(i);
             locations.add(convertRelativePoint(i));
         }
+        destroyConnection(conn);
         return locations;
     }
 
