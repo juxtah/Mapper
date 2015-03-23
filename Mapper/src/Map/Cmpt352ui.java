@@ -60,17 +60,49 @@ public class Cmpt352ui extends Application {
 
         startingTimePanel.setSpacing(10);
         Label startingTimeLabel = new Label("Starting Time:");
-        TextField startingTimeField = new TextField("March 20, 2015");
+        HBox startingTimeDate = new HBox();
+        startingTimeDate.setSpacing(5);
+        TextField startingHr = new TextField("9");
+        startingHr.setPrefWidth(40);
+        Label startingHrLabel = new Label("Hr");
+        TextField startingMin = new TextField("30");
+        startingMin.setPrefWidth(40);
+        Label startingMinLabel = new Label("Min");
+        TextField startingDay = new TextField("23");
+        startingDay.setPrefWidth(40);
+        ChoiceBox<String> startingMonth = new ChoiceBox<>();
+        startingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        startingMonth.getSelectionModel().select(3);
+        TextField startingYear = new TextField("2015");
+        startingYear.setMaxWidth(60);
+        startingTimeDate.getChildren().addAll(startingHr, startingHrLabel, startingMin, startingMinLabel, startingDay, startingMonth, startingYear);
 
         endingTimePanel.setSpacing(10);
         Label endingTimeLabel = new Label("Ending Time:");
-        TextField endingTimeField = new TextField("April 2, 2015");
+        HBox endingTimeDate = new HBox();
+        endingTimeDate.setSpacing(5);
+        TextField endingHr = new TextField("20");
+        endingHr.setPrefWidth(40);
+        Label endingHrLabel = new Label("Hr");
+        TextField endingMin = new TextField("00");
+        endingMin.setPrefWidth(40);
+        Label endingMinLabel = new Label("Min");
+        TextField endingDay = new TextField("23");
+        endingDay.setPrefWidth(40);
+        ChoiceBox<String> endingMonth = new ChoiceBox<>();
+        endingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        endingMonth.getSelectionModel().select(3);
+        TextField endingYear = new TextField("2015");
+        endingYear.setMaxWidth(60);
+        endingTimeDate.getChildren().addAll(endingHr, endingHrLabel, endingMin, endingMinLabel, endingDay, endingMonth, endingYear);
 
         submitPanel.setPadding(new Insets(25, 0, 0, 0));
         Button submitButton = new Button("Submit");
         submitButton.setOnAction((event) -> {
             myModel.setSelect(deviceList.getValue());
-            myModel.setTime(startingTimeField.getText(), endingTimeField.getText());
+            String startingTimeTemp = startingHr.getText()+" "+startingMin.getText()+" "+startingDay.getText()+" "+startingMonth.getValue()+" "+startingYear.getText();
+            String endingTimeTemp = endingHr.getText()+" "+endingMin.getText()+" "+endingDay.getText()+" "+endingMonth.getValue()+" "+endingYear.getText();
+            myModel.setTime(startingTimeTemp, endingTimeTemp);
             toDraw = myModel.getLocation();
             drawRoute(gc);
         });
@@ -83,8 +115,8 @@ public class Cmpt352ui extends Application {
         holder.getStyleClass().add("stackpane");
 
         devicePanel.getChildren().addAll(deviceLabel, deviceList);
-        startingTimePanel.getChildren().addAll(startingTimeLabel, startingTimeField);
-        endingTimePanel.getChildren().addAll(endingTimeLabel, endingTimeField);
+        startingTimePanel.getChildren().addAll(startingTimeLabel, startingTimeDate);
+        endingTimePanel.getChildren().addAll(endingTimeLabel, endingTimeDate);
         submitPanel.getChildren().addAll(submitButton);
         controlPanel.getChildren().addAll(devicePanel, startingTimePanel, endingTimePanel, submitPanel);
         holder.getChildren().addAll(myCanvas);

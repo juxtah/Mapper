@@ -63,13 +63,13 @@ public class MapModel {
 
     public void setTime(String start, String end) {
         try {
-            DateFormat format = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("H m d MMMM yyyy", Locale.ENGLISH);
             startingTime = format.parse(start);
             endingTime = format.parse(end);
         } catch (ParseException ex) {
             Logger.getLogger(MapModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Time set, start:"+startingTime.getTime() + " compare:"+endingTime.getTime());
+        System.out.println("Time set, start:"+startingTime.getTime() + " end:"+endingTime.getTime());
     }
     
     public List<GPSSet<Date, Double, Double>> getLocation(){
