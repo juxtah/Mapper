@@ -108,7 +108,7 @@ public class MapModel {
             convertedLocations.add(convertRelativePoint(i));
         }
         destroyConnection(conn);
-        removeObsoletePoints();
+        //removeObsoletePoints();
         return convertedLocations;
     }
 
