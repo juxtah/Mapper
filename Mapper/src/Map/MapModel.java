@@ -55,7 +55,7 @@ public class MapModel {
         return DeviceList;
     }
     
-    public void removeObsoletePoints(){
+    /*public void removeObsoletePoints(){
         GPSSet<Date, Double, Double> prefGPS = null;
         int count = 1;
         for(GPSSet<Date, Double, Double> i : locations){
@@ -70,7 +70,7 @@ public class MapModel {
                 count = 1;
             }
         }
-    }
+    }*/
     
     private double dist(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){
         double xdiff = (x.getLongitude() - y.getLongitude())*10000/1.1;
