@@ -54,30 +54,6 @@ public class MapModel {
     public ObservableList<String> getDevice() {
         return DeviceList;
     }
-    
-    public void removeObsoletePoints(){
-        GPSSet<Date, Double, Double> prefGPS = null;
-        int count = 1;
-        for(GPSSet<Date, Double, Double> i : locations){
-            if(prefGPS == null){
-                prefGPS=i;
-            }else if(dist(i, prefGPS)>=100*count){
-                convertedLocations.remove(locations.indexOf(i));
-                locations.remove(i);
-                count++;
-            }else{
-                prefGPS=i;
-                count = 1;
-            }
-        }
-    }
-    
-    private double dist(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){
-        double xdiff = (x.getLongitude() - y.getLongitude())*10000/1.1;
-        double ydiff = (x.getLatitude() - y.getLatitude())*10000/1.1;
-        return Math.sqrt(xdiff*xdiff+ydiff+ydiff);
-    }
-    
 
     public void setSelect(String name) {
         for (String i : DeviceList) {
@@ -108,8 +84,46 @@ public class MapModel {
             convertedLocations.add(convertRelativePoint(i));
         }
         destroyConnection(conn);
-        removeObsoletePoints();
+        //removeObsoletePoints();
         return convertedLocations;
+    }
+    
+    public void removeObsoletePoints(){
+        int distanceEstimated = 360;
+        GPSSet<Date, Double, Double> prefGPS = null;
+        List<GPSSet<Date, Double, Double>> toRemove = new ArrayList<>();
+        int count = 1;
+        for(GPSSet<Date, Double, Double> i : locations){
+            
+            if(prefGPS == null){
+                prefGPS=i;
+            }else if(distRealGPS(i, prefGPS)>=distanceEstimated*count){
+                toRemove.add(i);
+                count++;
+                //System.out.println("i removed");
+            }else{
+                prefGPS=i;
+                count = 1;
+            }
+        }
+        for(GPSSet<Date, Double, Double> i : toRemove){
+            convertedLocations.remove(locations.indexOf(i));
+            locations.remove(i);
+        }
+    }
+    
+    public double distRealGPS(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){
+        double xdiff = (x.getLongitude() - y.getLongitude())*100000/1.1;
+        double ydiff = (x.getLatitude() - y.getLatitude())*100000/1.1;
+        //System.out.println("xdiff:" + xdiff + " ydiff:" + ydiff + " dist:" + Math.sqrt(xdiff*xdiff+ydiff*ydiff));
+        return Math.sqrt(xdiff*xdiff+ydiff*ydiff);
+    }
+    
+    public double distRelative(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){
+        double xdiff = (x.getLongitude() - y.getLongitude());
+        double ydiff = (x.getLatitude() - y.getLatitude());
+        //System.out.println("xdiff:" + xdiff + " ydiff:" + ydiff + " dist:" + Math.sqrt(xdiff*xdiff+ydiff*ydiff));
+        return Math.sqrt(xdiff*xdiff+ydiff*ydiff);
     }
 
     public GPSSet<Date, Double, Double> showInfo(double X, double Y){
