@@ -160,7 +160,7 @@ public class Cmpt352ui extends Application {
                 }else{
                     info.relocate(mouseEvent.getX()-425, mouseEvent.getY());
                 }
-                info.setText(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
+                info.setText(temp.getTime().toString()/* + " Location: " + temp.getLatitude() + " " + temp.getLongitude()*/);
             }
             
 
