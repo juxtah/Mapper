@@ -150,11 +150,11 @@ public class Cmpt352ui extends Application {
  
         @Override
         public void handle(MouseEvent mouseEvent) {
-            System.out.println(mouseEvent.getEventType() + "\n" + "X : Y - " + mouseEvent.getX() + " : " + mouseEvent.getY() + "\n");
+            //System.out.println(mouseEvent.getEventType() + "\n" + "X : Y - " + mouseEvent.getX() + " : " + mouseEvent.getY() + "\n");
             GPSSet<Date, Double, Double> temp = myModel.showInfo(mouseEvent.getX(), mouseEvent.getY());
             if(temp!=null){
-                System.out.println("mouse on object");
-                System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
+                //System.out.println("mouse on object");
+                //System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
                 if(mouseEvent.getX()<=815){
                 info.relocate(mouseEvent.getX()+10, mouseEvent.getY());
                 }else{
