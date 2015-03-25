@@ -33,6 +33,7 @@ public class MapModel {
     private Date startingTime, endingTime;
     private String selected;
     private List<GPSSet<Date, Double, Double>> locations;
+    private List<GPSSet<Date, Double, Double>> convertedLocations;
 
     public MapModel() {
         Connection conn = instantiateConnection();
@@ -47,6 +48,7 @@ public class MapModel {
         endingTime = null;
         selected = null;
         locations= new ArrayList<>();
+        convertedLocations = new ArrayList<>();
     }
 
     public ObservableList<String> getDevice() {
@@ -75,20 +77,35 @@ public class MapModel {
     public List<GPSSet<Date, Double, Double>> getLocation(){
         Connection conn = instantiateConnection();
         locations.clear();
+        convertedLocations.clear();
         for(GPSSet<Date, Double, Double> i : getAllCoordinates(conn, selected, startingTime.getTime()/1000, endingTime.getTime()/1000)){
             System.out.println(i);
-            locations.add(convertRelativePoint(i));
+            locations.add(i);
+            convertedLocations.add(convertRelativePoint(i));
         }
         destroyConnection(conn);
-        return locations;
+        return convertedLocations;
     }
 
+    public GPSSet<Date, Double, Double> showInfo(double X, double Y){
+        for(GPSSet<Date, Double, Double> i : convertedLocations){
+            if(X<=i.getLongitude()+5&&X>=i.getLongitude()-5&&Y<=i.getLatitude()+5&&Y>=i.getLatitude()-5){
+                return locations.get(convertedLocations.indexOf(i));
+            }
+        }
+        return null;
+    }
+    
     private GPSSet<Date, Double, Double> convertRelativePoint(GPSSet<Date, Double, Double> old){
         double newLat = (52.13372-(double)old.getLatitude())/((52.13372-52.12894)/720);
         double newLong = ((double)old.getLongitude()-(-106.6414))/(((-106.6276)-(-106.6414))/1280);
         GPSSet<Date, Double, Double> newGPS = new GPSSet<>(old.getTime(), newLong, newLat);
         System.out.println(newGPS.getTime().toString() + newGPS.getLatitude() + newGPS.getLongitude());
         return newGPS;
+    }
+    
+    public boolean inMap(GPSSet<Date, Double, Double> loc){
+        return (loc.getLatitude()>=0&&loc.getLatitude()<=720&&loc.getLongitude()>=0&&loc.getLongitude()<=1280);
     }
     
 }

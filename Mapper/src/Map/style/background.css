@@ -10,3 +10,8 @@ and open the template in the editor.
 .stackpane {
     -fx-background-image: url('UofSMap.jpg');
  }
+
+ .infoLabel {
+    
+    -fx-background-color: transparent, derive(#7F88FF,80%);
+ }

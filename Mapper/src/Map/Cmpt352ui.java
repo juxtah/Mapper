@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -19,6 +20,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -30,18 +32,19 @@ import javafx.stage.Stage;
  * @author angus_000
  */
 public class Cmpt352ui extends Application {
-
+    
     private MapModel myModel;
     private List<GPSSet<Date, Double, Double>> toDraw;
+    private Label info;
     
     @Override
     public void start(Stage primaryStage) {
-
+        
         myModel = new MapModel();
-
+        
         Canvas myCanvas = new Canvas(1280, 720);
         GraphicsContext gc = myCanvas.getGraphicsContext2D();
-
+        
         VBox root = new VBox();
         HBox controlPanel = new HBox();
         VBox devicePanel = new VBox();
@@ -49,16 +52,19 @@ public class Cmpt352ui extends Application {
         VBox endingTimePanel = new VBox();
         VBox submitPanel = new VBox();
         Pane holder = new Pane();
-
+        
+        info = new Label();
+        info.getStyleClass().add("infoLabel");
+        
         controlPanel.setSpacing(30);
-
+        
         devicePanel.setSpacing(10);
         Label deviceLabel = new Label("Device list: ");
         deviceLabel.setFont(Font.font("Arial", 14));
-        ChoiceBox <String> deviceList = new ChoiceBox<>();
+        ChoiceBox<String> deviceList = new ChoiceBox<>();
         deviceList.setItems(myModel.getDevice());
         deviceList.setPrefWidth(350);
-
+        
         startingTimePanel.setSpacing(10);
         Label startingTimeLabel = new Label("Starting Time:");
         HBox startingTimeDate = new HBox();
@@ -66,11 +72,11 @@ public class Cmpt352ui extends Application {
         TextField startingHr = new TextField("9");
         startingHr.setPrefWidth(40);
         Label startingHrLabel = new Label("Hr");
-        startingHrLabel.setPadding(new Insets(5, 0 ,0 ,0));
+        startingHrLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField startingMin = new TextField("30");
         startingMin.setPrefWidth(40);
         Label startingMinLabel = new Label("Min");
-        startingMinLabel.setPadding(new Insets(5, 0 ,0 ,0));
+        startingMinLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField startingDay = new TextField("23");
         startingDay.setPrefWidth(40);
         ChoiceBox<String> startingMonth = new ChoiceBox<>();
@@ -79,7 +85,7 @@ public class Cmpt352ui extends Application {
         TextField startingYear = new TextField("2015");
         startingYear.setMaxWidth(50);
         startingTimeDate.getChildren().addAll(startingHr, startingHrLabel, startingMin, startingMinLabel, startingDay, startingMonth, startingYear);
-
+        
         endingTimePanel.setSpacing(10);
         Label endingTimeLabel = new Label("Ending Time:");
         HBox endingTimeDate = new HBox();
@@ -87,11 +93,11 @@ public class Cmpt352ui extends Application {
         TextField endingHr = new TextField("22");
         endingHr.setPrefWidth(40);
         Label endingHrLabel = new Label("Hr");
-        endingHrLabel.setPadding(new Insets(5, 0 ,0 ,0));
+        endingHrLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField endingMin = new TextField("00");
         endingMin.setPrefWidth(40);
         Label endingMinLabel = new Label("Min");
-        endingMinLabel.setPadding(new Insets(5, 0 ,0 ,0));
+        endingMinLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField endingDay = new TextField("23");
         endingDay.setPrefWidth(40);
         ChoiceBox<String> endingMonth = new ChoiceBox<>();
@@ -100,52 +106,81 @@ public class Cmpt352ui extends Application {
         TextField endingYear = new TextField("2015");
         endingYear.setMaxWidth(50);
         endingTimeDate.getChildren().addAll(endingHr, endingHrLabel, endingMin, endingMinLabel, endingDay, endingMonth, endingYear);
-
+        
         submitPanel.setPadding(new Insets(25, 0, 0, 0));
         Button submitButton = new Button("Submit");
         submitButton.setOnAction((event) -> {
             myModel.setSelect(deviceList.getValue());
-            String startingTimeTemp = startingHr.getText()+" "+startingMin.getText()+" "+startingDay.getText()+" "+startingMonth.getValue()+" "+startingYear.getText();
-            String endingTimeTemp = endingHr.getText()+" "+endingMin.getText()+" "+endingDay.getText()+" "+endingMonth.getValue()+" "+endingYear.getText();
+            String startingTimeTemp = startingHr.getText() + " " + startingMin.getText() + " " + startingDay.getText() + " " + startingMonth.getValue() + " " + startingYear.getText();
+            String endingTimeTemp = endingHr.getText() + " " + endingMin.getText() + " " + endingDay.getText() + " " + endingMonth.getValue() + " " + endingYear.getText();
             myModel.setTime(startingTimeTemp, endingTimeTemp);
             toDraw = myModel.getLocation();
             drawRoute(gc);
         });
-
+        
+        holder.setOnMouseMoved(mouseHandler);
+        
         root.setPadding(new Insets(20, 20, 20, 20));
         root.setSpacing(20);
-
+        
         holder.setMaxWidth(1280);
         holder.setMaxHeight(720);
         holder.getStyleClass().add("stackpane");
-
+        
         devicePanel.getChildren().addAll(deviceLabel, deviceList);
         startingTimePanel.getChildren().addAll(startingTimeLabel, startingTimeDate);
         endingTimePanel.getChildren().addAll(endingTimeLabel, endingTimeDate);
         submitPanel.getChildren().addAll(submitButton);
         controlPanel.getChildren().addAll(devicePanel, startingTimePanel, endingTimePanel, submitPanel);
-        holder.getChildren().addAll(myCanvas);
+        holder.getChildren().addAll(info, myCanvas);
+        
         root.getChildren().addAll(controlPanel, holder);
-
+        
         Scene scene = new Scene(root, 1320, 830);
         File f = new File("src/Map/style/background.css");
         scene.getStylesheets().clear();
         scene.getStylesheets().add("file:///" + f.getAbsolutePath().replace("\\", "/"));
-
+        
         primaryStage.setTitle("CMPT352 Mapping");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
     
-    private void drawRoute(GraphicsContext gc){
+    EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
+ 
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            System.out.println(mouseEvent.getEventType() + "\n" + "X : Y - " + mouseEvent.getX() + " : " + mouseEvent.getY() + "\n");
+            GPSSet<Date, Double, Double> temp = myModel.showInfo(mouseEvent.getX(), mouseEvent.getY());
+            if(temp!=null){
+                System.out.println("mouse on object");
+                System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
+                if(mouseEvent.getX()<=815){
+                info.relocate(mouseEvent.getX()+10, mouseEvent.getY());
+                }else{
+                    info.relocate(mouseEvent.getX()-425, mouseEvent.getY());
+                }
+                info.setText(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
+            }
+            
+
+        }
+     
+    };
+    
+    private void drawRoute(GraphicsContext gc) {
         gc.clearRect(0, 0, 1280, 720);
         GPSSet<Date, Double, Double> prevGPS = null;
-        for(GPSSet<Date, Double, Double> i : toDraw){
-            gc.fillOval(i.getLongitude()-2.5, i.getLatitude()-2.5, 5, 5);
-            if(prevGPS==null){
+        for (GPSSet<Date, Double, Double> i : toDraw) {
+            if (myModel.inMap(i)) {
+                gc.fillOval(i.getLongitude() - 2.5, i.getLatitude() - 2.5, 5, 5);
+            }
+            if (prevGPS == null) {
+                prevGPS = i;
+            } else if (myModel.inMap(i) || myModel.inMap(prevGPS)) {
+                gc.strokeLine(i.getLongitude(), i.getLatitude(), prevGPS.getLongitude(), prevGPS.getLatitude());
                 prevGPS = i;
             }else{
-                gc.strokeLine(i.getLongitude(), i.getLatitude(), prevGPS.getLongitude(), prevGPS.getLatitude());
                 prevGPS = i;
             }
         }
@@ -157,5 +192,5 @@ public class Cmpt352ui extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
 }
