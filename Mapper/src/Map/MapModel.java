@@ -54,6 +54,30 @@ public class MapModel {
     public ObservableList<String> getDevice() {
         return DeviceList;
     }
+    
+    public void removeObsoletePoints(){
+        GPSSet<Date, Double, Double> prefGPS = null;
+        int count = 1;
+        for(GPSSet<Date, Double, Double> i : locations){
+            if(prefGPS == null){
+                prefGPS=i;
+            }else if(dist(i, prefGPS)>=100*count){
+                convertedLocations.remove(locations.indexOf(i));
+                locations.remove(i);
+                count++;
+            }else{
+                prefGPS=i;
+                count = 1;
+            }
+        }
+    }
+    
+    private double dist(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){
+        double xdiff = (x.getLongitude() - y.getLongitude())*10000/1.1;
+        double ydiff = (x.getLatitude() - y.getLatitude())*10000/1.1;
+        return Math.sqrt(xdiff*xdiff+ydiff+ydiff);
+    }
+    
 
     public void setSelect(String name) {
         for (String i : DeviceList) {
@@ -84,6 +108,7 @@ public class MapModel {
             convertedLocations.add(convertRelativePoint(i));
         }
         destroyConnection(conn);
+        removeObsoletePoints();
         return convertedLocations;
     }
 

@@ -1,2 +1,4 @@
 Mapper/.metadata/.plugins/org.eclipse.jdt.core/savedIndexNames.txt
 Mapper/.metadata/*
+/Mapper/nbproject/private/
+/Mapper/build/
