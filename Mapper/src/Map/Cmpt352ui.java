@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -37,6 +38,7 @@ public class Cmpt352ui extends Application {
     private MapModel myModel;
     private List<GPSSet<Date, Double, Double>> toDraw;
     private Label info;
+    private CheckBox drawLineToggle;
 
     @Override
     public void start(Stage primaryStage) {
@@ -70,7 +72,7 @@ public class Cmpt352ui extends Application {
         Label startingTimeLabel = new Label("Starting Time:");
         HBox startingTimeDate = new HBox();
         startingTimeDate.setSpacing(5);
-        TextField startingHr = new TextField("9");
+        TextField startingHr = new TextField("8");
         startingHr.setPrefWidth(40);
         Label startingHrLabel = new Label("Hr");
         startingHrLabel.setPadding(new Insets(5, 0, 0, 0));
@@ -78,7 +80,7 @@ public class Cmpt352ui extends Application {
         startingMin.setPrefWidth(40);
         Label startingMinLabel = new Label("Min");
         startingMinLabel.setPadding(new Insets(5, 0, 0, 0));
-        TextField startingDay = new TextField("23");
+        TextField startingDay = new TextField("27");
         startingDay.setPrefWidth(40);
         ChoiceBox<String> startingMonth = new ChoiceBox<>();
         startingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
@@ -99,7 +101,7 @@ public class Cmpt352ui extends Application {
         endingMin.setPrefWidth(40);
         Label endingMinLabel = new Label("Min");
         endingMinLabel.setPadding(new Insets(5, 0, 0, 0));
-        TextField endingDay = new TextField("23");
+        TextField endingDay = new TextField("27");
         endingDay.setPrefWidth(40);
         ChoiceBox<String> endingMonth = new ChoiceBox<>();
         endingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
@@ -109,6 +111,9 @@ public class Cmpt352ui extends Application {
         endingTimeDate.getChildren().addAll(endingHr, endingHrLabel, endingMin, endingMinLabel, endingDay, endingMonth, endingYear);
 
         submitPanel.setPadding(new Insets(25, 0, 0, 0));
+        submitPanel.setSpacing(10);
+        drawLineToggle = new CheckBox("Draw Line");
+        drawLineToggle.setSelected(true);
         Button submitButton = new Button("Submit");
         submitButton.setOnAction((event) -> {
             myModel.setSelect(deviceList.getValue());
@@ -131,7 +136,7 @@ public class Cmpt352ui extends Application {
         devicePanel.getChildren().addAll(deviceLabel, deviceList);
         startingTimePanel.getChildren().addAll(startingTimeLabel, startingTimeDate);
         endingTimePanel.getChildren().addAll(endingTimeLabel, endingTimeDate);
-        submitPanel.getChildren().addAll(submitButton);
+        submitPanel.getChildren().addAll(drawLineToggle, submitButton);
         controlPanel.getChildren().addAll(devicePanel, startingTimePanel, endingTimePanel, submitPanel);
         holder.getChildren().addAll(info, myCanvas);
 
@@ -177,8 +182,8 @@ public class Cmpt352ui extends Application {
             }
             if (prevGPS == null) {
                 prevGPS = i;
-            } else if (myModel.inMap(i) || myModel.inMap(prevGPS)) {
-                if (myModel.distRelative(i, prevGPS) > 300) {
+            } else if (drawLineToggle.isSelected()&&(myModel.inMap(i) || myModel.inMap(prevGPS))) {
+                if (myModel.distRelative(i, prevGPS) > 400) {
                     gc.setStroke(Color.RED);
                     gc.strokeLine(i.getLongitude(), i.getLatitude(), prevGPS.getLongitude(), prevGPS.getLatitude());
                 } else {
