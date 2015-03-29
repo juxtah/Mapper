@@ -39,11 +39,11 @@ public class MapModel {
         Connection conn = instantiateConnection();
         String[] r = getDeviceList(conn);
         destroyConnection(conn);
-        for (String i : r) {
-            if (r != null) {
+        if (r != null){
+            for (String i : r)
                 DeviceList.addAll(i);
-            }
         }
+        
         startingTime = null;
         endingTime = null;
         selected = null;
@@ -56,11 +56,9 @@ public class MapModel {
     }
 
     public void setSelect(String name) {
-        for (String i : DeviceList) {
-            if (name.equals(i)) {
-                selected = i;
-            }
-        }
+        DeviceList.stream().filter((i) -> (name.equals(i))).forEach((i) -> {
+            selected = i;
+        });
     }
 
     public void setTime(String start, String end) {
@@ -78,11 +76,15 @@ public class MapModel {
         Connection conn = instantiateConnection();
         locations.clear();
         convertedLocations.clear();
-        for(GPSSet<Date, Double, Double> i : getAllCoordinates(conn, selected, startingTime.getTime()/1000, endingTime.getTime()/1000)){
+        getAllCoordinates(conn, selected, startingTime.getTime()/1000, endingTime.getTime()/1000).stream().map((i) -> {
             System.out.println(i);
+            return i;
+        }).map((i) -> {
             locations.add(i);
+            return i;
+        }).forEach((i) -> {
             convertedLocations.add(convertRelativePoint(i));
-        }
+        });
         destroyConnection(conn);
         //removeObsoletePoints();
         return convertedLocations;
@@ -106,10 +108,12 @@ public class MapModel {
                 count = 1;
             }
         }
-        for(GPSSet<Date, Double, Double> i : toRemove){
+        toRemove.stream().map((i) -> {
             convertedLocations.remove(locations.indexOf(i));
+            return i;
+        }).forEach((i) -> {
             locations.remove(i);
-        }
+        });
     }
     
     public double distRealGPS(GPSSet<Date, Double, Double> x, GPSSet<Date, Double, Double> y){

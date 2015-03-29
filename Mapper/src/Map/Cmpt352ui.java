@@ -40,6 +40,23 @@ public class Cmpt352ui extends Application {
     private Label info;
     private CheckBox drawLineToggle;
 
+    public Cmpt352ui() {
+        this.mouseHandler = (MouseEvent mouseEvent) -> {
+            //System.out.println(mouseEvent.getEventType() + "\n" + "X : Y - " + mouseEvent.getX() + " : " + mouseEvent.getY() + "\n");
+            GPSSet<Date, Double, Double> temp = myModel.showInfo(mouseEvent.getX(), mouseEvent.getY());
+            if (temp != null) {
+                //System.out.println("mouse on object");
+                //System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
+                if (mouseEvent.getX() <= 815) {
+                    info.relocate(mouseEvent.getX() + 10, mouseEvent.getY());
+                } else {
+                    info.relocate(mouseEvent.getX() - 425, mouseEvent.getY());
+                }
+                info.setText(temp.getTime().toString() /*" Location: " + temp.getLatitude() + " " + temp.getLongitude()*/);
+            }
+        };
+    }
+
     @Override
     public void start(Stage primaryStage) {
 
@@ -152,26 +169,7 @@ public class Cmpt352ui extends Application {
         primaryStage.show();
     }
 
-    EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
-
-        @Override
-        public void handle(MouseEvent mouseEvent) {
-            //System.out.println(mouseEvent.getEventType() + "\n" + "X : Y - " + mouseEvent.getX() + " : " + mouseEvent.getY() + "\n");
-            GPSSet<Date, Double, Double> temp = myModel.showInfo(mouseEvent.getX(), mouseEvent.getY());
-            if (temp != null) {
-                //System.out.println("mouse on object");
-                //System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
-                if (mouseEvent.getX() <= 815) {
-                    info.relocate(mouseEvent.getX() + 10, mouseEvent.getY());
-                } else {
-                    info.relocate(mouseEvent.getX() - 425, mouseEvent.getY());
-                }
-                info.setText(temp.getTime().toString() /*" Location: " + temp.getLatitude() + " " + temp.getLongitude()*/);
-            }
-
-        }
-
-    };
+    EventHandler<MouseEvent> mouseHandler;
 
     private void drawRoute(GraphicsContext gc) {
         gc.clearRect(0, 0, 1280, 720);
