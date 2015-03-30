@@ -39,7 +39,7 @@ public class MapModel {
         Connection conn = instantiateConnection();
         String[] r = getDeviceList(conn);
         destroyConnection(conn);
-        if (r != null){         //If you check for r after doing a for loop, you're going to have a bad time.
+            if (r != null){    //If you check for r after doing a for loop, you're going to have a bad time.
             for (String i : r)
                 DeviceList.addAll(i);
         }
