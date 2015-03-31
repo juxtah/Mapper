@@ -142,7 +142,7 @@ public class MapModel {
         double newLat = (52.133684-(double)old.getLatitude())/((52.133684-52.128953)/720);
         double newLong = ((double)old.getLongitude()-(-106.641304))/(((-106.627518)-(-106.641304))/1280);
         GPSSet<Date, Double, Double> newGPS = new GPSSet<>(old.getTime(), newLong, newLat);
-        System.out.println(newGPS.getTime().toString() + newGPS.getLatitude() + newGPS.getLongitude());
+        System.out.println(newGPS.getTime().toString() + " " + newGPS.getLatitude() + " " + newGPS.getLongitude());
         return newGPS;
     }
     

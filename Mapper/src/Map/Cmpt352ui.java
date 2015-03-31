@@ -47,10 +47,10 @@ public class Cmpt352ui extends Application {
             if (temp != null) {
                 //System.out.println("mouse on object");
                 //System.out.println(temp.getTime().toString() + " Location: " + temp.getLatitude() + " " + temp.getLongitude());
-                if (mouseEvent.getX() <= 815) {
+                if (mouseEvent.getX() <= 1000) {
                     info.relocate(mouseEvent.getX() + 10, mouseEvent.getY());
                 } else {
-                    info.relocate(mouseEvent.getX() - 425, mouseEvent.getY());
+                    info.relocate(mouseEvent.getX() - 200, mouseEvent.getY());
                 }
                 info.setText(temp.getTime().toString() /*" Location: " + temp.getLatitude() + " " + temp.getLongitude()*/);
             }
@@ -90,20 +90,20 @@ public class Cmpt352ui extends Application {
         HBox startingTimeDate = new HBox();
         startingTimeDate.setSpacing(5);
         TextField startingHr = new TextField("8");
-        startingHr.setPrefWidth(80);
+        startingHr.setPrefWidth(40);
         Label startingHrLabel = new Label("Hr");
         startingHrLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField startingMin = new TextField("30");
-        startingMin.setPrefWidth(80);
+        startingMin.setPrefWidth(40);
         Label startingMinLabel = new Label("Min");
         startingMinLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField startingDay = new TextField("27");
-        startingDay.setPrefWidth(80);
+        startingDay.setPrefWidth(40);
         ChoiceBox<String> startingMonth = new ChoiceBox<>();
         startingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
         startingMonth.getSelectionModel().select(2);
         TextField startingYear = new TextField("2015");
-        startingYear.setMaxWidth(100);
+        startingYear.setMaxWidth(50);
         startingTimeDate.getChildren().addAll(startingHr, startingHrLabel, startingMin, startingMinLabel, startingDay, startingMonth, startingYear);
 
         endingTimePanel.setSpacing(10);
@@ -111,23 +111,23 @@ public class Cmpt352ui extends Application {
         HBox endingTimeDate = new HBox();
         endingTimeDate.setSpacing(5);
         TextField endingHr = new TextField("22");
-        endingHr.setPrefWidth(80);
+        endingHr.setPrefWidth(40);
         Label endingHrLabel = new Label("Hr");
         endingHrLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField endingMin = new TextField("00");
-        endingMin.setPrefWidth(80);
+        endingMin.setPrefWidth(40);
         Label endingMinLabel = new Label("Min");
         endingMinLabel.setPadding(new Insets(5, 0, 0, 0));
         TextField endingDay = new TextField("27");
-        endingDay.setPrefWidth(80);
+        endingDay.setPrefWidth(40);
         ChoiceBox<String> endingMonth = new ChoiceBox<>();
         endingMonth.getItems().addAll("January", "Febuary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
         endingMonth.getSelectionModel().select(2);
         TextField endingYear = new TextField("2015");
-        endingYear.setMaxWidth(100);
+        endingYear.setMaxWidth(50);
         endingTimeDate.getChildren().addAll(endingHr, endingHrLabel, endingMin, endingMinLabel, endingDay, endingMonth, endingYear);
 
-        submitPanel.setPadding(new Insets(25, 0, 0, 0));
+        submitPanel.setPadding(new Insets(0, 0, 0, 0));
         submitPanel.setSpacing(10);
         drawLineToggle = new CheckBox("Draw Line");
         drawLineToggle.setSelected(true);
@@ -181,7 +181,7 @@ public class Cmpt352ui extends Application {
             if (prevGPS == null) {
                 prevGPS = i;
             } else if (drawLineToggle.isSelected()&&(myModel.inMap(i) || myModel.inMap(prevGPS))) {
-                if (myModel.distRelative(i, prevGPS) > 400) {
+                if (myModel.distRelative(i, prevGPS) > 350) {
                     gc.setStroke(Color.RED);
                     gc.strokeLine(i.getLongitude(), i.getLatitude(), prevGPS.getLongitude(), prevGPS.getLatitude());
                 } else {
