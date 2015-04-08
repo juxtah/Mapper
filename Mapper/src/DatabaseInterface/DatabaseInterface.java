@@ -20,9 +20,6 @@ import java.util.List;
  */
 public class DatabaseInterface {
 
-    private final static String USER = "ychen";
-    private final static String PASS = "th0ught";
-
     /**
      * We have an empty constructor so someone doesn't accidentally instantiate
      * this class
@@ -55,7 +52,7 @@ public class DatabaseInterface {
     public static Connection instantiateConnection() {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            return DriverManager.getConnection("jdbc:mysql://projectindigo.ca:3306", USER, PASS);
+            return DriverManager.getConnection("jdbc:mysql://REDACTED", USER, PASS);
         } catch (SQLException e) {
             System.err.println("ERROR: " + e.getMessage());
             return null;
